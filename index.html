@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Brainworks</title>
+  </head>
+  <body>
+        
+        <!-- Navbar -->
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="container-fluid">
+            <span class="navbar-brand mx-auto mb-0 h1">BUMBLEBEE</span>
+            </div>
+        </nav>
+
+
+      <!-- Taking input  -->
+      <div class="container mt-3">
+        <h3>Enter new data here:</h3>
+    </div>
+      <div class="container mt-3">
+        <form action="https://sheetdb.io/api/v1/jhzbdff227ayt" method="POST" id="sheetdb-form" class="row g-3">
+            <div class="col-md-6 col-sm-12">
+              <label for="firstname" class="form-label">First Name</label>
+              <input type="text" name="data[Firstname]" class="form-control" id="firstname" required>
+            </div>
+            <div class="col-md-6 col-sm-12">
+                <label for="lastName" class="form-label">Last Name</label>
+                <input type="text" name="data[Lastname]" class="form-control" id="lastname" required>
+              </div>
+            
+              <div class="d-grid gap-2 col-6 mx-auto">
+                <button class="btn btn-primary" type="submit">Save</button>
+              </div>
+          </form>
+        </div>
+
+        <!-- Fetching Data  -->
+        <div class="container mt-3">
+            <h3>Enter the First Name whoes last name you are searching for:</h3>
+        </div>
+        <div class="container mt-3" method="GET">
+            <form class="row g-3">
+                <div class="col-md-7 col-sm-12">
+                    <input type="text" id="Fetchfirst" name="Fetchfirst" class="form-control" placeholder="First Name" aria-label="First Name">
+                </div>
+                <div class="d-grid gap-2 col-5 mx-auto">
+                    <button type="button" onclick="fetchlast()" class="btn btn-outline-success" type="fetch">Fetch</button>
+                </div>
+                <h3>The Last Name is : <span id="Fetchlast"></span></h3>
+                
+            </form>
+        </div>
+
+    <!-- Javascript Code  -->
+    <script>
+        var form = document.getElementById('sheetdb-form');
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+            fetch(form.action, {
+                method : "POST",
+                body : new FormData(document.getElementById("sheetdb-form"),)
+            }).then(
+                response => response.json()
+            ).then((html) => {
+                window.open('success.html','_blank');
+            }).catch(error => console.log('Error!', error.message))
+        });
+
+        function fetchlast() {
+            let Fetchfirst = document.getElementById('Fetchfirst');
+            let count = 0;
+
+            fetch('https://sheetdb.io/api/v1/jhzbdff227ayt')
+            .then((apidata) => {
+            // console.log(apidata);
+            return apidata.json();
+            })
+            .then((actualdata) => {
+            // console.log(actualdata);
+            for(let i=0; i<actualdata.length; i++) {
+                let myFirstname = JSON.stringify(actualdata[i].Firstname);
+                let myFetchfirst = JSON.stringify(Fetchfirst.value);
+                if (myFirstname.toLowerCase() == myFetchfirst.toLowerCase()) {
+                    const mydata = actualdata[i].Lastname;
+                    document.getElementById('Fetchlast').innerHTML = mydata;
+                    count = 1;
+                }
+            } 
+            if (count == 0) document.getElementById('Fetchlast').innerHTML = `Data Not Found`;
+            })
+            .catch((error) => {
+                console.log(`The Problem : ${error}`);
+            });
+        }
+
+    </script>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>
